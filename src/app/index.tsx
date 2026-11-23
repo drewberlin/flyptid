@@ -51,6 +51,7 @@ export default function MainScreen() {
           faceB={<PlaceholderFace label="B" color={SIDES.B.color} size={coinSize} />}
           flipRequest={flipRequest}
           onLanded={handleLanded}
+          onAboutToLand={feedback.landSound}
           onPress={handlePress}
           accessibilityLabel="Coin. Tap to flip."
         />

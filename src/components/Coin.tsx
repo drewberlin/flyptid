@@ -20,9 +20,14 @@ type Props = {
   faceB: ReactNode;
   flipRequest: FlipRequest | null;
   onLanded: (side: Side) => void;
+  /** Fires LANDING_LEAD_MS before the coin stops (used to time the sound). */
+  onAboutToLand?: () => void;
   onPress: () => void;
   accessibilityLabel: string;
 };
+
+// How early "about to land" fires. The sound needs a head start to feel in sync.
+const LANDING_LEAD_MS = 400;
 
 /**
  * A two-sided coin that spins around its vertical axis (rotateY).
@@ -33,7 +38,16 @@ type Props = {
  * The result is decided *before* this runs; we just pick a target angle that
  * ends on the right face.
  */
-export function Coin({ size, faceA, faceB, flipRequest, onLanded, onPress, accessibilityLabel }: Props) {
+export function Coin({
+  size,
+  faceA,
+  faceB,
+  flipRequest,
+  onLanded,
+  onAboutToLand,
+  onPress,
+  accessibilityLabel,
+}: Props) {
   const rotation = useSharedValue(0);
   const scale = useSharedValue(1);
   const faceUp = useRef<Side>('A'); // which face is showing right now
@@ -63,6 +77,11 @@ export function Coin({ size, faceA, faceB, flipRequest, onLanded, onPress, acces
       withTiming(1.12, { duration: duration * 0.35, easing: Easing.out(Easing.quad) }),
       withTiming(1, { duration: duration * 0.65, easing: Easing.inOut(Easing.quad) }),
     );
+
+    // Signal "about to land" a little before the end. Cleared if the screen
+    // closes mid-flip so it never fires late.
+    const timer = setTimeout(() => onAboutToLand?.(), Math.max(0, duration - LANDING_LEAD_MS));
+    return () => clearTimeout(timer);
     // Only re-run when a new flip is requested (not when onLanded changes identity).
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flipRequest?.id]);
