@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -118,25 +118,3 @@ export function Coin({
 const styles = StyleSheet.create({
   face: { ...StyleSheet.absoluteFill, alignItems: 'center', justifyContent: 'center' },
 });
-
-/** Stand-in coin face until the cryptid art arrives in Phase 3. */
-export function PlaceholderFace({ label, color, size }: { label: string; color: string; size: number }) {
-  return (
-    <View
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        backgroundColor: color,
-        borderWidth: size * 0.05,
-        borderColor: '#00000033', // darker rim
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <Text style={{ fontSize: size * 0.4, fontWeight: '800', color: '#ffffffdd' }}>
-        {label}
-      </Text>
-    </View>
-  );
-}
